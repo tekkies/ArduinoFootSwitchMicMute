@@ -22,34 +22,30 @@ namespace MuteFootSwitch
 
         private void arduinoSerialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            var readChar = GetLastChar();
-            if (readChar == 'M')
+            var lastChar = GetLastChar();
+            var checkState = CheckState.Indeterminate;
+            if (lastChar == 'M')
             {
-                Invoke((Action)(() => SetCheckbox(CheckState.Unchecked)));
+                checkState = CheckState.Unchecked;
             }
-            else if(readChar == 'H')
+            else if(lastChar == 'H')
             {
-                Invoke((Action)(() => SetCheckbox(CheckState.Checked)));
+                checkState = CheckState.Checked;
             }
-            else
-            {
-                Invoke((Action)(() => SetCheckbox(CheckState.Indeterminate)));
-            }
-            Debug.WriteLine(readChar);
+            Invoke((Action)(() => SetCheckbox(checkState)));
+        }
+        private void SetCheckbox(CheckState checkState)
+        {
+            micLiveCheckBox.CheckState = checkState;
         }
 
         private int GetLastChar()
         {
-            int readChar;
             var charsRead = arduinoSerialPort.Read(_buffer, 0, _buffer.Length);
-            readChar = _buffer[charsRead - 1];
+            int readChar = _buffer[charsRead - 1];
             return readChar;
         }
 
-        private void SetCheckbox(CheckState @checked)
-        {
-            micLiveCheckBox.CheckState = @checked;
-        }
 
         private void switchedPressedCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -61,16 +57,6 @@ namespace MuteFootSwitch
                     device.AudioEndpointVolume.Mute = !micLiveCheckBox.Checked;
                 }
             }
-        }
-
-        private void ArduinoFootSwitchMicMute_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
