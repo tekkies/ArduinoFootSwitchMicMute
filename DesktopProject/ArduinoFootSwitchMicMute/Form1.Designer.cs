@@ -41,12 +41,11 @@
             // 
             // micLiveCheckBox
             // 
-            this.micLiveCheckBox.Enabled = false;
             this.micLiveCheckBox.Location = new System.Drawing.Point(12, 12);
             this.micLiveCheckBox.Name = "micLiveCheckBox";
             this.micLiveCheckBox.Size = new System.Drawing.Size(104, 24);
             this.micLiveCheckBox.TabIndex = 1;
-            this.micLiveCheckBox.Text = "MICS LIVE";
+            this.micLiveCheckBox.Text = "MIC HOT";
             this.micLiveCheckBox.UseVisualStyleBackColor = true;
             this.micLiveCheckBox.CheckedChanged += new System.EventHandler(this.switchedPressedCheckBox_CheckedChanged);
             // 
