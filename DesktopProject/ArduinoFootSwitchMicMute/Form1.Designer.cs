@@ -32,8 +32,8 @@
             this.arduinoSerialPort = new System.IO.Ports.SerialPort(this.components);
             this.micLiveCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.levelsButton = new System.Windows.Forms.Button();
             this.levelsTimer = new System.Windows.Forms.Timer(this.components);
+            this.micLevel = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // arduinoSerialPort
@@ -45,9 +45,9 @@
             // 
             this.micLiveCheckBox.Location = new System.Drawing.Point(12, 12);
             this.micLiveCheckBox.Name = "micLiveCheckBox";
-            this.micLiveCheckBox.Size = new System.Drawing.Size(104, 24);
+            this.micLiveCheckBox.Size = new System.Drawing.Size(153, 24);
             this.micLiveCheckBox.TabIndex = 1;
-            this.micLiveCheckBox.Text = "MIC HOT";
+            this.micLiveCheckBox.Text = "Mics Enabled";
             this.micLiveCheckBox.UseVisualStyleBackColor = true;
             this.micLiveCheckBox.CheckedChanged += new System.EventHandler(this.switchedPressedCheckBox_CheckedChanged);
             // 
@@ -61,26 +61,23 @@
             this.label1.Text = "© 2020 Andy Joiner\r\n\r\nCredits:\r\nNAudio, an audio library for .NET by Mark Heath a" +
     "nd Contributors";
             // 
-            // levelsButton
-            // 
-            this.levelsButton.Location = new System.Drawing.Point(381, 12);
-            this.levelsButton.Name = "levelsButton";
-            this.levelsButton.Size = new System.Drawing.Size(75, 23);
-            this.levelsButton.TabIndex = 3;
-            this.levelsButton.Text = "Levels";
-            this.levelsButton.UseVisualStyleBackColor = true;
-            this.levelsButton.Click += new System.EventHandler(this.levelsButton_Click);
-            // 
             // levelsTimer
             // 
             this.levelsTimer.Tick += new System.EventHandler(this.levelsTimer_Tick);
+            // 
+            // micLevel
+            // 
+            this.micLevel.Location = new System.Drawing.Point(356, 12);
+            this.micLevel.Name = "micLevel";
+            this.micLevel.Size = new System.Drawing.Size(100, 23);
+            this.micLevel.TabIndex = 4;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 129);
-            this.Controls.Add(this.levelsButton);
+            this.Controls.Add(this.micLevel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.micLiveCheckBox);
             this.Name = "MainForm";
@@ -95,8 +92,8 @@
         private System.IO.Ports.SerialPort arduinoSerialPort;
         private System.Windows.Forms.CheckBox micLiveCheckBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button levelsButton;
         private System.Windows.Forms.Timer levelsTimer;
+        private System.Windows.Forms.ProgressBar micLevel;
     }
 }
 

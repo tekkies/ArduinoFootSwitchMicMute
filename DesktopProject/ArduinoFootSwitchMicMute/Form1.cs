@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using NAudio.CoreAudioApi;
-using NAudio.Wave;
-using NAudio.Wave.SampleProviders;
 
 namespace MuteFootSwitch
 {
     public partial class MainForm : Form
     {
-        private byte[] _buffer;
-        private WaveInProvider _waveInProvider;
-        private MeteringSampleProvider _meteringSampleProvider;
-        private SampleChannel _sampleChannel;
-        private List<Microphone> _microphones = new List<Microphone>();
+        private readonly byte[] _buffer;
+        private readonly List<Microphone> _microphones = new List<Microphone>();
 
         public MainForm()
         {
@@ -24,8 +19,13 @@ namespace MuteFootSwitch
                 arduinoSerialPort.Open();
             }
             _buffer = new byte[arduinoSerialPort.ReadBufferSize];
-            SetCheckbox(CheckState.Indeterminate);
+            SetCheckbox(CheckState.Unchecked);
 
+            StartLevelMeter();
+        }
+
+        private void StartLevelMeter()
+        {
             using (var deviceEnumerator = new MMDeviceEnumerator())
             {
                 var devices = deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
@@ -37,9 +37,9 @@ namespace MuteFootSwitch
                     _microphones.Add(microphone);
                 }
             }
+
             levelsTimer.Start();
         }
-
 
         private void arduinoSerialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
@@ -84,48 +84,17 @@ namespace MuteFootSwitch
                 }
             }
         }
-
-
-        private void levelsButton_Click(object sender, EventArgs e)
-        {
-            using (var deviceEnumerator = new MMDeviceEnumerator())
-            {
-                var devices = deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
-                foreach (var device in devices)
-                {
-                    var waveIn = new WasapiCapture(device);
-                    waveIn.StartRecording();
-                    var deviceAudioMeterInformation = device.AudioMeterInformation;
-                    Debug.WriteLine(deviceAudioMeterInformation.MasterPeakValue);
-                }
-            }
-
-        }
-
-        private void OnPreVolumeMeter(object sender, StreamVolumeEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void OnPostVolumeMeter(object sender, StreamVolumeEventArgs streamVolumeEventArgs)
-        {
-            Debug.WriteLine(streamVolumeEventArgs.MaxSampleValues[0]);
-        }
-
-        private void OnDataAvailable(object sender, WaveInEventArgs waveInEventArgs)
-        {
-            //_meteringSampleProvider.Read(waveInEventArgs.Buffer, 0, waveInEventArgs.BytesRecorded);
-
-            //Debug.WriteLine(waveInEventArgs.BytesRecorded);
-        }
-
+        
         private void levelsTimer_Tick(object sender, EventArgs e)
         {
+            float masterPeakValue=0;
             foreach (var microphone in _microphones)
             {
                 var deviceAudioMeterInformation = microphone.Device.AudioMeterInformation;
-                Debug.WriteLine(deviceAudioMeterInformation.MasterPeakValue);
+                masterPeakValue += deviceAudioMeterInformation.MasterPeakValue;
             }
+            masterPeakValue = masterPeakValue * 100 / _microphones.Count;
+            micLevel.Value = (int) masterPeakValue;
         }
     }
 
