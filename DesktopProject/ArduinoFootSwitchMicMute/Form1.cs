@@ -45,16 +45,21 @@ namespace MuteFootSwitch
             int readChar = _buffer[charsRead - 1];
             return readChar;
         }
-
-
+        
         private void switchedPressedCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var checkState = micLiveCheckBox.Checked;
+            SwitchMic(checkState);
+        }
+
+        private static void SwitchMic(bool enabled)
         {
             using (var deviceEnumerator = new MMDeviceEnumerator())
             {
                 var devices = deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
                 foreach (var device in devices)
                 {
-                    device.AudioEndpointVolume.Mute = !micLiveCheckBox.Checked;
+                    device.AudioEndpointVolume.Mute = !enabled;
                 }
             }
         }
