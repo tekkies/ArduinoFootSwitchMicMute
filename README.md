@@ -8,10 +8,10 @@ Works on my machine.
 
 ![Hardware](/Docs/hardware.png)
 
-Using SPDT push switch.  Wiring:
-* GND - SPDT Common
-* 10 - SPDT 1 (can't remember which) 
-* 11 - SPDT 2 (can't remember which)
+Using DPDT push switch (SPDT will do).  Wiring:
+* GND - Common
+* 10 - NC
+* 11 - NO
 
 
 TODO
