@@ -32,6 +32,8 @@
             this.arduinoSerialPort = new System.IO.Ports.SerialPort(this.components);
             this.micLiveCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.levelsButton = new System.Windows.Forms.Button();
+            this.levelsTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // arduinoSerialPort
@@ -59,11 +61,26 @@
             this.label1.Text = "© 2020 Andy Joiner\r\n\r\nCredits:\r\nNAudio, an audio library for .NET by Mark Heath a" +
     "nd Contributors";
             // 
+            // levelsButton
+            // 
+            this.levelsButton.Location = new System.Drawing.Point(381, 12);
+            this.levelsButton.Name = "levelsButton";
+            this.levelsButton.Size = new System.Drawing.Size(75, 23);
+            this.levelsButton.TabIndex = 3;
+            this.levelsButton.Text = "Levels";
+            this.levelsButton.UseVisualStyleBackColor = true;
+            this.levelsButton.Click += new System.EventHandler(this.levelsButton_Click);
+            // 
+            // levelsTimer
+            // 
+            this.levelsTimer.Tick += new System.EventHandler(this.levelsTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 129);
+            this.Controls.Add(this.levelsButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.micLiveCheckBox);
             this.Name = "MainForm";
@@ -78,6 +95,8 @@
         private System.IO.Ports.SerialPort arduinoSerialPort;
         private System.Windows.Forms.CheckBox micLiveCheckBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button levelsButton;
+        private System.Windows.Forms.Timer levelsTimer;
     }
 }
 
