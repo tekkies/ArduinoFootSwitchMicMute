@@ -6,7 +6,7 @@ void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
   Serial.begin(9600);
-  Serial.println(F("ArduinoFootSwitchMicMute v1.01"));
+  Serial.println(F("ArduinoFootSwitchMicMute v1.02"));
 }
 
 void loop() {
@@ -25,6 +25,7 @@ void loop() {
     }
 
     if(micHot != lastMicHot) {
+      digitalWrite(13, micHot);
       Serial.print(micHot ? "H" : "M");
       lastMicHot = micHot;
     }
