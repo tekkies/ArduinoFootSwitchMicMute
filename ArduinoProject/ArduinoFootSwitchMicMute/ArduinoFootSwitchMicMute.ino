@@ -1,27 +1,32 @@
 void setup() {
-  // put your setup code here, to run once:
-  pinMode(10, INPUT);           // set pin to input
-  digitalWrite(10, HIGH);       // turn on pullup resistors
-  pinMode(11, INPUT);           // set pin to input
-  digitalWrite(11, HIGH);       // turn on pullup resistors
+  pinMode(10, INPUT);
+  digitalWrite(10, HIGH);
+  pinMode(11, INPUT);
+  digitalWrite(11, HIGH);
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
   Serial.begin(9600);
-  Serial.println(F("ArduinoFootSwitchMicMute"));
+  Serial.println(F("ArduinoFootSwitchMicMute v1.01"));
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  int p10;
-  int p11;
-  int lastNet=-1;
-  while(true) {
-    p10 = digitalRead(10);
-    p11 = digitalRead(11);
-    int net = (p10+p11*2);
-    if((net == 1) || (net == 2)) {
-      if(net != lastNet) {
-        Serial.print(net);
-        lastNet = net; 
-      }
+  int lastMicHot=-1;
+  int micHot = -1;
+  while(true) 
+  {
+    int pattern = (digitalRead(10)+digitalRead(11)*2);
+    if(pattern == 1) 
+    {
+      micHot = 1;
+    } 
+    else if (pattern == 2) 
+    {
+      micHot = 0;
+    }
+
+    if(micHot != lastMicHot) {
+      Serial.print(micHot ? "H" : "M");
+      lastMicHot = micHot;
     }
   }
 }

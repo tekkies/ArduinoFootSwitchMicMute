@@ -17,23 +17,23 @@ namespace MuteFootSwitch
                 arduinoSerialPort.Open();
             }
             _buffer = new byte[arduinoSerialPort.ReadBufferSize];
+            SetCheckbox(CheckState.Indeterminate);
         }
 
         private void arduinoSerialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            int readChar;
-            readChar = GetLastChar();
-            if (readChar == 50)
+            var readChar = GetLastChar();
+            if (readChar == 'M')
             {
-                Invoke((Action)(() => SetCheckbox3(CheckState.Unchecked)));
+                Invoke((Action)(() => SetCheckbox(CheckState.Unchecked)));
             }
-            else if(readChar == 49)
+            else if(readChar == 'H')
             {
-                Invoke((Action)(() => SetCheckbox3(CheckState.Checked)));
+                Invoke((Action)(() => SetCheckbox(CheckState.Checked)));
             }
             else
             {
-                Invoke((Action)(() => SetCheckbox3(CheckState.Indeterminate)));
+                Invoke((Action)(() => SetCheckbox(CheckState.Indeterminate)));
             }
             Debug.WriteLine(readChar);
         }
@@ -46,7 +46,7 @@ namespace MuteFootSwitch
             return readChar;
         }
 
-        private void SetCheckbox3(CheckState @checked)
+        private void SetCheckbox(CheckState @checked)
         {
             micLiveCheckBox.CheckState = @checked;
         }
