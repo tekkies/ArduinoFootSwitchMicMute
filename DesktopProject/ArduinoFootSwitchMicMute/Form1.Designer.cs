@@ -59,7 +59,6 @@
             this.label1.TabIndex = 2;
             this.label1.Text = "© 2020 Andy Joiner\r\n\r\nCredits:\r\nNAudio, an audio library for .NET by Mark Heath a" +
     "nd Contributors";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // MainForm
             // 
@@ -70,7 +69,6 @@
             this.Controls.Add(this.micLiveCheckBox);
             this.Name = "MainForm";
             this.Text = "ArduinoFootSwitchMicMute";
-            this.Load += new System.EventHandler(this.ArduinoFootSwitchMicMute_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
