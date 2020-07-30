@@ -94,6 +94,10 @@ namespace MuteFootSwitch
                 masterPeakValue += deviceAudioMeterInformation.MasterPeakValue;
             }
             masterPeakValue = masterPeakValue * 100 / _microphones.Count;
+            if (masterPeakValue > 1)
+            {
+                masterPeakValue = (float) (Math.Log10(masterPeakValue) * (100 / 2));
+            }
             micLevel.Value = (int) masterPeakValue;
         }
     }
