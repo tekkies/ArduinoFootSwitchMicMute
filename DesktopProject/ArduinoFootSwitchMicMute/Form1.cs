@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using ArduinoFootSwitchMicMute.Properties;
 using NAudio.CoreAudioApi;
+using TrayAppTerminateManager;
 
 namespace MuteFootSwitch
 {
     public partial class MainForm : Form
     {
+        private const int IconWidth = 64;
         private readonly byte[] _buffer;
         private readonly List<Microphone> _microphones = new List<Microphone>();
+        private TerminateManager _terminateManager;
 
         public MainForm()
         {
             InitializeComponent();
+            _terminateManager = new TerminateManager(this, trayIcon);
             if (!arduinoSerialPort.IsOpen)
             {
                 arduinoSerialPort.Open();
@@ -99,6 +107,60 @@ namespace MuteFootSwitch
                 masterPeakValue = (float) (Math.Log10(masterPeakValue) * (100 / 2));
             }
             micLevel.Value = (int) masterPeakValue;
+            DrawIcon((int)masterPeakValue);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _terminateManager.FormClosing(sender, e);
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Auto)]
+        extern static bool DestroyIcon(IntPtr handle);
+
+        private void DrawIcon(int masterPeakValue)
+        {
+            if (!_terminateManager.Terminating)
+            {
+                using (var bitmap = new Bitmap(IconWidth, IconWidth, PixelFormat.Format32bppPArgb))
+                {
+                    var dateTime = DateTime.Now;
+                    using (var graphics = Graphics.FromImage(bitmap))
+                    {
+                        var rectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                        if (micLiveCheckBox.CheckState == CheckState.Checked)
+                        {
+                            graphics.DrawIcon(ArduinoFootSwitchMicMute.Properties.Resources.micwhite, rectangle);
+                            var barHeight = (bitmap.Height * masterPeakValue) / 100;
+                            graphics.FillRectangle(Brushes.LawnGreen, 0, bitmap.Height - barHeight, (bitmap.Width*10)/32, bitmap.Height);
+                        }
+                        else
+                        {
+                            graphics.DrawIcon(ArduinoFootSwitchMicMute.Properties.Resources.micdisabled, rectangle);
+                            //graphics.FillEllipse(Brushes.Red, rectangle);
+                            //graphics.FillPie(Brushes.Yellow, rectangle, angle, 360);
+                            //graphics.FillPie(Brushes.Red, rectangle, 0, angle);
+                        }
+
+                        
+
+                    }
+
+                    var hIcon = bitmap.GetHicon();
+                    trayIcon.Icon = Icon.FromHandle(hIcon);
+                    DestroyIcon(trayIcon.Icon.Handle);
+                }
+            }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            micLiveCheckBox.Checked = !micLiveCheckBox.Checked;
         }
     }
 
