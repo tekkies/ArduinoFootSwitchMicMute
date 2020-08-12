@@ -14,6 +14,8 @@ namespace MuteFootSwitch
     public partial class MainForm : Form
     {
         private const int IconWidth = 64;
+        private const string RestoreMenuText = "&Restore";
+        private const string EXitMenuText = "E&xit";
         private readonly byte[] _buffer;
         private readonly List<Microphone> _microphones = new List<Microphone>();
         private TerminateManager _terminateManager;
@@ -161,6 +163,27 @@ namespace MuteFootSwitch
         private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             micLiveCheckBox.Checked = !micLiveCheckBox.Checked;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            trayIconContextMenuStrip.Items.Clear();
+            trayIconContextMenuStrip.Items.Add(RestoreMenuText);
+            trayIconContextMenuStrip.Items.Add(EXitMenuText);
+        }
+
+        private void trayIconContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (e.ClickedItem.Text == RestoreMenuText)
+            {
+                Show();
+                WindowState = FormWindowState.Normal;
+            }
+
+            else if (e.ClickedItem.Text == EXitMenuText)
+            {
+                Close();
+            }
         }
     }
 

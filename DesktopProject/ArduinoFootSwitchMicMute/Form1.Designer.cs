@@ -35,6 +35,7 @@
             this.levelsTimer = new System.Windows.Forms.Timer(this.components);
             this.micLevel = new System.Windows.Forms.ProgressBar();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.trayIconContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SuspendLayout();
             // 
             // arduinoSerialPort
@@ -55,7 +56,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 39);
+            this.label1.Location = new System.Drawing.Point(12, 65);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(613, 85);
             this.label1.TabIndex = 2;
@@ -77,8 +78,16 @@
             // 
             // trayIcon
             // 
+            this.trayIcon.ContextMenuStrip = this.trayIconContextMenuStrip;
             this.trayIcon.Visible = true;
             this.trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.trayIcon_MouseDoubleClick);
+            // 
+            // trayIconContextMenuStrip
+            // 
+            this.trayIconContextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.trayIconContextMenuStrip.Name = "contextMenuStrip1";
+            this.trayIconContextMenuStrip.Size = new System.Drawing.Size(211, 32);
+            this.trayIconContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.trayIconContextMenuStrip_ItemClicked);
             // 
             // MainForm
             // 
@@ -91,6 +100,7 @@
             this.Name = "MainForm";
             this.Text = "ArduinoFootSwitchMicMute";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -104,6 +114,7 @@
         private System.Windows.Forms.Timer levelsTimer;
         private System.Windows.Forms.ProgressBar micLevel;
         private System.Windows.Forms.NotifyIcon trayIcon;
+        private System.Windows.Forms.ContextMenuStrip trayIconContextMenuStrip;
     }
 }
 
