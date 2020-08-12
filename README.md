@@ -1,6 +1,6 @@
 # ArduinoFootSwitchMicMute
 
-A quick and dirty PTT foot switch for Windows that mutes all microphones unless the button is pressed.
+A quick and dirty PTT foot switch for Windows that mutes all microphones unless the button is pressed.  Uses Arduino Uno.
 
 Works on my machine.
 
