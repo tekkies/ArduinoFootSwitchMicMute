@@ -30,8 +30,8 @@ namespace MuteFootSwitch
             }
             _buffer = new byte[arduinoSerialPort.ReadBufferSize];
             SetCheckbox(CheckState.Unchecked);
-
             StartLevelMeter();
+            WindowState = FormWindowState.Minimized;
         }
 
         private void StartLevelMeter()
@@ -139,25 +139,13 @@ namespace MuteFootSwitch
                         else
                         {
                             graphics.DrawIcon(ArduinoFootSwitchMicMute.Properties.Resources.micdisabled, rectangle);
-                            //graphics.FillEllipse(Brushes.Red, rectangle);
-                            //graphics.FillPie(Brushes.Yellow, rectangle, angle, 360);
-                            //graphics.FillPie(Brushes.Red, rectangle, 0, angle);
                         }
-
-                        
-
                     }
-
                     var hIcon = bitmap.GetHicon();
                     trayIcon.Icon = Icon.FromHandle(hIcon);
                     DestroyIcon(trayIcon.Icon.Handle);
                 }
             }
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -184,6 +172,12 @@ namespace MuteFootSwitch
             {
                 Close();
             }
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == WindowState)
+                Hide();
         }
     }
 

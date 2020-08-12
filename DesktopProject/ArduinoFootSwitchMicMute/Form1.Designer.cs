@@ -63,7 +63,6 @@
             this.label1.Text = "© 2020 Andy Joiner\r\n\r\nCredits:\r\nNAudio, an audio library for .NET by Mark Heath a" +
     "nd Contributors\r\nTray icon management based on WinFormWithTrayIcon Copyright (c)" +
     " 2010-2017 John J Schultz";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // levelsTimer
             // 
@@ -86,7 +85,7 @@
             // 
             this.trayIconContextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.trayIconContextMenuStrip.Name = "contextMenuStrip1";
-            this.trayIconContextMenuStrip.Size = new System.Drawing.Size(211, 32);
+            this.trayIconContextMenuStrip.Size = new System.Drawing.Size(61, 4);
             this.trayIconContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.trayIconContextMenuStrip_ItemClicked);
             // 
             // MainForm
@@ -101,6 +100,7 @@
             this.Text = "ArduinoFootSwitchMicMute";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
