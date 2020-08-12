@@ -51,10 +51,16 @@ namespace TrayAppTerminateManager
             {
                 // the idle state has occurred, and the tray notification should be gone.
                 // ok to shutdown now
+
+                //This is a hack
+                    Environment.Exit(0);
+                    Application.Exit();
+
+
                 return;
             }
 
-            if (e.CloseReason == CloseReason.UserClosing && MessageBox.Show("Are you sure you want to close this form?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
+            if (e.CloseReason == CloseReason.UserClosing && MessageBox.Show("Are you sure you want to close this app?", "Warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) == DialogResult.Cancel)
             {
                 // only the user, selecting Cancel in a MessageBox, can do this.
                 e.Cancel = true;

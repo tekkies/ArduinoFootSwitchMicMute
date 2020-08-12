@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using ArduinoFootSwitchMicMute.Properties;
 using NAudio.CoreAudioApi;
 using TrayAppTerminateManager;
 
