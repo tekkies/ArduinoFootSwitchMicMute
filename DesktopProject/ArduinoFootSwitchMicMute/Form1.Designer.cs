@@ -29,11 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.arduinoSerialPort = new System.IO.Ports.SerialPort(this.components);
             this.micLiveCheckBox = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.levelsTimer = new System.Windows.Forms.Timer(this.components);
             this.micLevel = new System.Windows.Forms.ProgressBar();
+            this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.trayIconContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.SuspendLayout();
             // 
             // arduinoSerialPort
@@ -54,12 +57,13 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 39);
+            this.label1.Location = new System.Drawing.Point(12, 65);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(422, 68);
+            this.label1.Size = new System.Drawing.Size(613, 85);
             this.label1.TabIndex = 2;
             this.label1.Text = "© 2020 Andy Joiner\r\n\r\nCredits:\r\nNAudio, an audio library for .NET by Mark Heath a" +
-    "nd Contributors";
+    "nd Contributors\r\nTray icon management based on WinFormWithTrayIcon Copyright (c)" +
+    " 2010-2017 John J Schultz";
             // 
             // levelsTimer
             // 
@@ -67,21 +71,38 @@
             // 
             // micLevel
             // 
-            this.micLevel.Location = new System.Drawing.Point(356, 12);
+            this.micLevel.Location = new System.Drawing.Point(525, 13);
             this.micLevel.Name = "micLevel";
             this.micLevel.Size = new System.Drawing.Size(100, 23);
             this.micLevel.TabIndex = 4;
+            // 
+            // trayIcon
+            // 
+            this.trayIcon.ContextMenuStrip = this.trayIconContextMenuStrip;
+            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
+            this.trayIcon.Visible = true;
+            this.trayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.trayIcon_MouseDoubleClick);
+            // 
+            // trayIconContextMenuStrip
+            // 
+            this.trayIconContextMenuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.trayIconContextMenuStrip.Name = "contextMenuStrip1";
+            this.trayIconContextMenuStrip.Size = new System.Drawing.Size(61, 4);
+            this.trayIconContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.trayIconContextMenuStrip_ItemClicked);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(468, 129);
+            this.ClientSize = new System.Drawing.Size(635, 159);
             this.Controls.Add(this.micLevel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.micLiveCheckBox);
             this.Name = "MainForm";
             this.Text = "ArduinoFootSwitchMicMute";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -94,6 +115,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer levelsTimer;
         private System.Windows.Forms.ProgressBar micLevel;
+        private System.Windows.Forms.NotifyIcon trayIcon;
+        private System.Windows.Forms.ContextMenuStrip trayIconContextMenuStrip;
     }
 }
 

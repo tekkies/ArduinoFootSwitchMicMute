@@ -59,5 +59,25 @@ namespace ArduinoFootSwitchMicMute.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon micdisabled {
+            get {
+                object obj = ResourceManager.GetObject("micdisabled", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon micwhite {
+            get {
+                object obj = ResourceManager.GetObject("micwhite", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

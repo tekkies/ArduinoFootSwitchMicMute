@@ -1,27 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NAudio.CoreAudioApi;
+using TrayAppTerminateManager;
 
 namespace MuteFootSwitch
 {
     public partial class MainForm : Form
     {
+        private const int IconWidth = 64;
+        private const string RestoreMenuText = "&Restore";
+        private const string EXitMenuText = "E&xit";
         private readonly byte[] _buffer;
         private readonly List<Microphone> _microphones = new List<Microphone>();
+        private TerminateManager _terminateManager;
 
         public MainForm()
         {
             InitializeComponent();
+            _terminateManager = new TerminateManager(this, trayIcon);
             if (!arduinoSerialPort.IsOpen)
             {
                 arduinoSerialPort.Open();
             }
             _buffer = new byte[arduinoSerialPort.ReadBufferSize];
             SetCheckbox(CheckState.Unchecked);
-
             StartLevelMeter();
+            WindowState = FormWindowState.Minimized;
         }
 
         private void StartLevelMeter()
@@ -99,6 +107,75 @@ namespace MuteFootSwitch
                 masterPeakValue = (float) (Math.Log10(masterPeakValue) * (100 / 2));
             }
             micLevel.Value = (int) masterPeakValue;
+            DrawIcon((int)masterPeakValue);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _terminateManager.FormClosing(sender, e);
+        }
+
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = CharSet.Auto)]
+        extern static bool DestroyIcon(IntPtr handle);
+
+        private void DrawIcon(int masterPeakValue)
+        {
+            if (!_terminateManager.Terminating)
+            {
+                using (var bitmap = new Bitmap(IconWidth, IconWidth, PixelFormat.Format32bppPArgb))
+                {
+                    var dateTime = DateTime.Now;
+                    using (var graphics = Graphics.FromImage(bitmap))
+                    {
+                        var rectangle = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+                        if (micLiveCheckBox.CheckState == CheckState.Checked)
+                        {
+                            graphics.DrawIcon(ArduinoFootSwitchMicMute.Properties.Resources.micwhite, rectangle);
+                            var barHeight = (bitmap.Height * masterPeakValue) / 100;
+                            graphics.FillRectangle(Brushes.LawnGreen, 0, bitmap.Height - barHeight, (bitmap.Width*10)/32, bitmap.Height);
+                        }
+                        else
+                        {
+                            graphics.DrawIcon(ArduinoFootSwitchMicMute.Properties.Resources.micdisabled, rectangle);
+                        }
+                    }
+                    var hIcon = bitmap.GetHicon();
+                    trayIcon.Icon = Icon.FromHandle(hIcon);
+                    DestroyIcon(trayIcon.Icon.Handle);
+                }
+            }
+        }
+
+        private void trayIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            micLiveCheckBox.Checked = !micLiveCheckBox.Checked;
+        }
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            trayIconContextMenuStrip.Items.Clear();
+            trayIconContextMenuStrip.Items.Add(RestoreMenuText);
+            trayIconContextMenuStrip.Items.Add(EXitMenuText);
+        }
+
+        private void trayIconContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (e.ClickedItem.Text == RestoreMenuText)
+            {
+                Show();
+                WindowState = FormWindowState.Normal;
+            }
+
+            else if (e.ClickedItem.Text == EXitMenuText)
+            {
+                Close();
+            }
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == WindowState)
+                Hide();
         }
     }
 
