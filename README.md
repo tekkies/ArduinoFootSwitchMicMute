@@ -4,8 +4,14 @@ A quick and dirty PTT foot switch for Windows that mutes all microphones unless 
 
 Works on my machine.
 
+## In action
+![Animation](/Docs/animation.gif)
+
+## Screenshot
 ![Screenshot](/Docs/screenshot.png)
 
+
+## Hardware
 ![Hardware](/Docs/hardware.png)
 
 Using DPDT push switch (SPDT will do).  Wiring:
@@ -14,7 +20,7 @@ Using DPDT push switch (SPDT will do).  Wiring:
 * 11 - NO
 
 
-TODO
+## TODO
 - [ ] Tidy code
 - [ ] COM port selection
 - [ ] Tray app
