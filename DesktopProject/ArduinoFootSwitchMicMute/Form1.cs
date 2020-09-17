@@ -29,7 +29,6 @@ namespace MuteFootSwitch
             _buffer = new byte[arduinoSerialPort.ReadBufferSize];
             SetCheckbox(CheckState.Unchecked);
             StartLevelMeter();
-            WindowState = FormWindowState.Minimized;
         }
 
         private void StartLevelMeter()
@@ -156,6 +155,7 @@ namespace MuteFootSwitch
             trayIconContextMenuStrip.Items.Clear();
             trayIconContextMenuStrip.Items.Add(RestoreMenuText);
             trayIconContextMenuStrip.Items.Add(EXitMenuText);
+            WindowState = FormWindowState.Minimized;
         }
 
         private void trayIconContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -164,6 +164,7 @@ namespace MuteFootSwitch
             {
                 Show();
                 WindowState = FormWindowState.Normal;
+                ShowInTaskbar = true;
             }
 
             else if (e.ClickedItem.Text == EXitMenuText)
@@ -175,7 +176,10 @@ namespace MuteFootSwitch
         private void MainForm_Resize(object sender, EventArgs e)
         {
             if (FormWindowState.Minimized == WindowState)
+            {
+                ShowInTaskbar = false;
                 Hide();
+            }
         }
     }
 

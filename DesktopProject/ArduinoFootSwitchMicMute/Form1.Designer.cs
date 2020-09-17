@@ -99,7 +99,9 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.micLiveCheckBox);
             this.Name = "MainForm";
+            this.ShowInTaskbar = false;
             this.Text = "ArduinoFootSwitchMicMute";
+            this.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Resize += new System.EventHandler(this.MainForm_Resize);
