@@ -131,7 +131,7 @@ namespace MuteFootSwitch
                         {
                             graphics.DrawIcon(ArduinoFootSwitchMicMute.Properties.Resources.micwhite, rectangle);
                             var barHeight = (bitmap.Height * masterPeakValue) / 100;
-                            graphics.FillRectangle(Brushes.LawnGreen, 0, bitmap.Height - barHeight, (bitmap.Width*10)/32, bitmap.Height);
+                            graphics.FillRectangle(Brushes.White, 0, bitmap.Height - barHeight, (bitmap.Width*10)/32, bitmap.Height);
                         }
                         else
                         {
@@ -180,6 +180,16 @@ namespace MuteFootSwitch
                 ShowInTaskbar = false;
                 Hide();
             }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            base.OnKeyUp(e);
         }
     }
 
