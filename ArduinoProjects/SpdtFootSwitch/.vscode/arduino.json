@@ -1,0 +1,7 @@
+{
+
+    "sketch": "SpdtFootSwitch.ino",
+    "port": "COM12",
+    "board": "arduino:avr:uno",
+    "programmer": "arduino:avrisp"
+}

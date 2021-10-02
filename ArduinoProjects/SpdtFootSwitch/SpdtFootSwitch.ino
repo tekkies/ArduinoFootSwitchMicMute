@@ -6,7 +6,7 @@ void setup() {
   pinMode(13, OUTPUT);
   digitalWrite(13, LOW);
   Serial.begin(9600);
-  Serial.println(F("ArduinoFootSwitchMicMute v1.02"));
+  Serial.println(F("SPDT Foot Switch v1.02"));
 }
 
 void loop() {
