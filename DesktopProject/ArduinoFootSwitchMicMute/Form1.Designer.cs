@@ -37,11 +37,12 @@
             this.micLevel = new System.Windows.Forms.ProgressBar();
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayIconContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.portTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // arduinoSerialPort
             // 
-            this.arduinoSerialPort.PortName = "COM12";
+            this.arduinoSerialPort.PortName = "COM6";
             this.arduinoSerialPort.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.arduinoSerialPort_DataReceived);
             // 
             // micLiveCheckBox
@@ -90,6 +91,10 @@
             this.trayIconContextMenuStrip.Size = new System.Drawing.Size(61, 4);
             this.trayIconContextMenuStrip.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.trayIconContextMenuStrip_ItemClicked);
             // 
+            // portTimer
+            // 
+            this.portTimer.Tick += new System.EventHandler(this.portTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -119,6 +124,7 @@
         private System.Windows.Forms.ProgressBar micLevel;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip trayIconContextMenuStrip;
+        private System.Windows.Forms.Timer portTimer;
     }
 }
 

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using NAudio.CoreAudioApi;
 using TrayAppTerminateManager;
@@ -14,21 +16,28 @@ namespace MuteFootSwitch
         private const int IconWidth = 64;
         private const string RestoreMenuText = "&Restore";
         private const string EXitMenuText = "E&xit";
-        private readonly byte[] _buffer;
+        private byte[] _buffer;
         private readonly List<Microphone> _microphones = new List<Microphone>();
         private TerminateManager _terminateManager;
+        private int portNumber;
+        private bool live;
 
         public MainForm()
         {
             InitializeComponent();
             _terminateManager = new TerminateManager(this, trayIcon);
-            if (!arduinoSerialPort.IsOpen)
-            {
-                arduinoSerialPort.Open();
-            }
-            _buffer = new byte[arduinoSerialPort.ReadBufferSize];
             SetCheckbox(CheckState.Unchecked);
             StartLevelMeter();
+            StartPortHunt();
+            ShowWindow();
+        }
+
+        private void StartPortHunt()
+        {
+            live = false;
+            portNumber = 6;
+            arduinoSerialPort.Close();
+            portTimer.Start();
         }
 
         private void StartLevelMeter()
@@ -39,7 +48,7 @@ namespace MuteFootSwitch
                 foreach (var device in devices)
                 {
                     var waveIn = new WasapiCapture(device);
-                    var microphone = new Microphone() {Device = device, WaveIn = waveIn};
+                    var microphone = new Microphone() { Device = device, WaveIn = waveIn };
                     waveIn.StartRecording();
                     _microphones.Add(microphone);
                 }
@@ -50,17 +59,21 @@ namespace MuteFootSwitch
 
         private void arduinoSerialPort_DataReceived(object sender, System.IO.Ports.SerialDataReceivedEventArgs e)
         {
-            var lastChar = GetLastChar();
-            var checkState = CheckState.Indeterminate;
-            if (lastChar == 'M')
+            if (live)
             {
-                checkState = CheckState.Unchecked;
+                var lastChar = GetLastChar();
+                var checkState = CheckState.Indeterminate;
+                if (lastChar == 'M')
+                {
+                    checkState = CheckState.Unchecked;
+                }
+                else if (lastChar == 'H')
+                {
+                    checkState = CheckState.Checked;
+                }
+
+                Invoke((Action) (() => SetCheckbox(checkState)));
             }
-            else if(lastChar == 'H')
-            {
-                checkState = CheckState.Checked;
-            }
-            Invoke((Action)(() => SetCheckbox(checkState)));
         }
         private void SetCheckbox(CheckState checkState)
         {
@@ -73,7 +86,7 @@ namespace MuteFootSwitch
             int readChar = _buffer[charsRead - 1];
             return readChar;
         }
-        
+
         private void switchedPressedCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             var checkState = micLiveCheckBox.Checked;
@@ -90,11 +103,12 @@ namespace MuteFootSwitch
                     device.AudioEndpointVolume.Mute = !enabled;
                 }
             }
+
         }
-        
+
         private void levelsTimer_Tick(object sender, EventArgs e)
         {
-            float masterPeakValue=0;
+            float masterPeakValue = 0;
             foreach (var microphone in _microphones)
             {
                 var deviceAudioMeterInformation = microphone.Device.AudioMeterInformation;
@@ -103,9 +117,9 @@ namespace MuteFootSwitch
             masterPeakValue = masterPeakValue * 100 / _microphones.Count;
             if (masterPeakValue > 1)
             {
-                masterPeakValue = (float) (Math.Log10(masterPeakValue) * (100 / 2));
+                masterPeakValue = (float)(Math.Log10(masterPeakValue) * (100 / 2));
             }
-            micLevel.Value = (int) masterPeakValue;
+            micLevel.Value = (int)masterPeakValue;
             DrawIcon((int)masterPeakValue);
         }
 
@@ -131,7 +145,7 @@ namespace MuteFootSwitch
                         {
                             graphics.DrawIcon(ArduinoFootSwitchMicMute.Properties.Resources.micwhite, rectangle);
                             var barHeight = (bitmap.Height * masterPeakValue) / 100;
-                            graphics.FillRectangle(Brushes.White, 0, bitmap.Height - barHeight, (bitmap.Width*10)/32, bitmap.Height);
+                            graphics.FillRectangle(Brushes.White, 0, bitmap.Height - barHeight, (bitmap.Width * 10) / 32, bitmap.Height);
                         }
                         else
                         {
@@ -162,15 +176,20 @@ namespace MuteFootSwitch
         {
             if (e.ClickedItem.Text == RestoreMenuText)
             {
-                Show();
-                WindowState = FormWindowState.Normal;
-                ShowInTaskbar = true;
+                ShowWindow();
             }
 
             else if (e.ClickedItem.Text == EXitMenuText)
             {
                 Close();
             }
+        }
+
+        private void ShowWindow()
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+            ShowInTaskbar = true;
         }
 
         private void MainForm_Resize(object sender, EventArgs e)
@@ -190,6 +209,58 @@ namespace MuteFootSwitch
         protected override void OnKeyUp(KeyEventArgs e)
         {
             base.OnKeyUp(e);
+        }
+
+        private void portTimer_Tick(object sender, EventArgs e)
+        {
+            portTimer.Stop();
+            arduinoSerialPort.PortName = $"COM{portNumber}";
+            _buffer = new byte[arduinoSerialPort.ReadBufferSize];
+            try
+            {
+                arduinoSerialPort.Open();
+            }
+            catch (System.IO.IOException)
+            {
+            }
+
+            if (arduinoSerialPort.IsOpen)
+            {
+                Thread.Sleep(2000);
+                arduinoSerialPort.Write("i");
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                arduinoSerialPort.ReadTimeout = 2000;
+                try
+                {
+                    var helloLine = arduinoSerialPort.ReadLine();
+                    stopwatch.Stop();
+                    if (!String.IsNullOrEmpty(helloLine))
+                    {
+                        if (helloLine.StartsWith("Tekkies Foot Switch:"))
+                        {
+                            live = true;
+                        }
+                    }
+                }
+                catch (System.TimeoutException)
+                {
+                }
+            }
+            if (!live)
+            {
+                SkipPort();
+            }
+        }
+
+        private void SkipPort()
+        {
+            portNumber++;
+            if (arduinoSerialPort.IsOpen)
+            {
+                arduinoSerialPort.Close();
+            }
+            portTimer.Start();
         }
     }
 

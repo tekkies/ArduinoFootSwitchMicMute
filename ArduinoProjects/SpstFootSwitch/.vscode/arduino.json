@@ -1,0 +1,6 @@
+{
+    "sketch": "SpstFootSwitch.ino",
+    "port": "COM6",
+    "board": "arduino:avr:uno",
+    "programmer": "arduino:avrisp"
+}
