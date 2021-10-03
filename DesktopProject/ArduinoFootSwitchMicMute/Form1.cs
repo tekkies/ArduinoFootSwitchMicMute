@@ -35,7 +35,7 @@ namespace MuteFootSwitch
         private void StartPortHunt()
         {
             live = false;
-            portNumber = 6;
+            portNumber = 1;
             arduinoSerialPort.Close();
             portTimer.Start();
         }
@@ -213,8 +213,15 @@ namespace MuteFootSwitch
 
         private void portTimer_Tick(object sender, EventArgs e)
         {
+            if (live && arduinoSerialPort.IsOpen)
+            {
+                return;
+            }
+            ShowWindow();
+            live = false;
             portTimer.Stop();
             arduinoSerialPort.PortName = $"COM{portNumber}";
+            labelStatus.Text = $"Probing {arduinoSerialPort.PortName}...";
             _buffer = new byte[arduinoSerialPort.ReadBufferSize];
             try
             {
@@ -227,10 +234,18 @@ namespace MuteFootSwitch
             if (arduinoSerialPort.IsOpen)
             {
                 Thread.Sleep(2000);
-                arduinoSerialPort.Write("i");
+                arduinoSerialPort.ReadTimeout = 2000;
+                arduinoSerialPort.WriteTimeout = 100;
+                try
+                {
+                    arduinoSerialPort.Write("i");
+                }
+                catch (Exception)
+                {
+                }
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
-                arduinoSerialPort.ReadTimeout = 2000;
+                
                 try
                 {
                     var helloLine = arduinoSerialPort.ReadLine();
@@ -239,6 +254,8 @@ namespace MuteFootSwitch
                     {
                         if (helloLine.StartsWith("Tekkies Foot Switch:"))
                         {
+                            labelStatus.Text = $"Connected {arduinoSerialPort.PortName}";
+                            WindowState = FormWindowState.Minimized;
                             live = true;
                         }
                     }
@@ -251,16 +268,20 @@ namespace MuteFootSwitch
             {
                 SkipPort();
             }
+            portTimer.Start();
         }
 
         private void SkipPort()
         {
-            portNumber++;
             if (arduinoSerialPort.IsOpen)
             {
                 arduinoSerialPort.Close();
             }
-            portTimer.Start();
+            portNumber++;
+            if (portNumber > 30)
+            {
+                portNumber = 1;
+            }
         }
     }
 

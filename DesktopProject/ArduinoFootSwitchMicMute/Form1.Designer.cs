@@ -38,6 +38,7 @@
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.trayIconContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.portTimer = new System.Windows.Forms.Timer(this.components);
+            this.labelStatus = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // arduinoSerialPort
@@ -95,11 +96,21 @@
             // 
             this.portTimer.Tick += new System.EventHandler(this.portTimer_Tick);
             // 
+            // labelStatus
+            // 
+            this.labelStatus.AutoSize = true;
+            this.labelStatus.Location = new System.Drawing.Point(12, 40);
+            this.labelStatus.Name = "labelStatus";
+            this.labelStatus.Size = new System.Drawing.Size(81, 17);
+            this.labelStatus.TabIndex = 5;
+            this.labelStatus.Text = "Initializing...";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(635, 159);
+            this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.micLevel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.micLiveCheckBox);
@@ -125,6 +136,7 @@
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip trayIconContextMenuStrip;
         private System.Windows.Forms.Timer portTimer;
+        private System.Windows.Forms.Label labelStatus;
     }
 }
 
