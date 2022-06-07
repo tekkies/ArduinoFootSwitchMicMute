@@ -35,7 +35,7 @@ namespace MuteFootSwitch
         private void StartPortHunt()
         {
             live = false;
-            portNumber = 1;
+            portNumber = 6;
             arduinoSerialPort.Close();
             portTimer.Start();
         }
@@ -100,7 +100,11 @@ namespace MuteFootSwitch
                 var devices = deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
                 foreach (var device in devices)
                 {
-                    device.AudioEndpointVolume.Mute = !enabled;
+                    //Debug.WriteLine($"{device.FriendlyName}:{!device.AudioEndpointVolume.Mute}");
+                    //if (!(device.AudioEndpointVolume.Mute == !enabled))
+                    {
+                        device.AudioEndpointVolume.Mute = !enabled;
+                    }
                 }
             }
 
@@ -282,6 +286,11 @@ namespace MuteFootSwitch
             {
                 portNumber = 1;
             }
+        }
+
+        private void doubleCheckTimer_Tick(object sender, EventArgs e)
+        {
+            SwitchMic(micLiveCheckBox.Checked);
         }
     }
 

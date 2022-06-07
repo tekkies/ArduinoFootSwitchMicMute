@@ -39,6 +39,7 @@
             this.trayIconContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.portTimer = new System.Windows.Forms.Timer(this.components);
             this.labelStatus = new System.Windows.Forms.Label();
+            this.doubleCheckTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // arduinoSerialPort
@@ -105,6 +106,12 @@
             this.labelStatus.TabIndex = 5;
             this.labelStatus.Text = "Initializing...";
             // 
+            // doubleCheckTimer
+            // 
+            this.doubleCheckTimer.Enabled = true;
+            this.doubleCheckTimer.Interval = 1000;
+            this.doubleCheckTimer.Tick += new System.EventHandler(this.doubleCheckTimer_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -137,6 +144,7 @@
         private System.Windows.Forms.ContextMenuStrip trayIconContextMenuStrip;
         private System.Windows.Forms.Timer portTimer;
         private System.Windows.Forms.Label labelStatus;
+        private System.Windows.Forms.Timer doubleCheckTimer;
     }
 }
 
