@@ -40,6 +40,7 @@
             this.portTimer = new System.Windows.Forms.Timer(this.components);
             this.labelStatus = new System.Windows.Forms.Label();
             this.doubleCheckTimer = new System.Windows.Forms.Timer(this.components);
+            this.reMuteTime = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // arduinoSerialPort
@@ -62,7 +63,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 65);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(613, 85);
+            this.label1.Size = new System.Drawing.Size(569, 80);
             this.label1.TabIndex = 2;
             this.label1.Text = "© 2020 Andy Joiner\r\n\r\nCredits:\r\nNAudio, an audio library for .NET by Mark Heath a" +
     "nd Contributors\r\nTray icon management based on WinFormWithTrayIcon Copyright (c)" +
@@ -102,15 +103,20 @@
             this.labelStatus.AutoSize = true;
             this.labelStatus.Location = new System.Drawing.Point(12, 40);
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(81, 17);
+            this.labelStatus.Size = new System.Drawing.Size(73, 16);
             this.labelStatus.TabIndex = 5;
             this.labelStatus.Text = "Initializing...";
             // 
             // doubleCheckTimer
             // 
             this.doubleCheckTimer.Enabled = true;
-            this.doubleCheckTimer.Interval = 1000;
+            this.doubleCheckTimer.Interval = 2000;
             this.doubleCheckTimer.Tick += new System.EventHandler(this.doubleCheckTimer_Tick);
+            // 
+            // reMuteTime
+            // 
+            this.reMuteTime.Interval = 1000;
+            this.reMuteTime.Tick += new System.EventHandler(this.reMuteTime_Tick);
             // 
             // MainForm
             // 
@@ -145,6 +151,7 @@
         private System.Windows.Forms.Timer portTimer;
         private System.Windows.Forms.Label labelStatus;
         private System.Windows.Forms.Timer doubleCheckTimer;
+        private System.Windows.Forms.Timer reMuteTime;
     }
 }
 

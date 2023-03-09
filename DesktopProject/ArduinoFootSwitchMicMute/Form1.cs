@@ -16,14 +16,17 @@ namespace MuteFootSwitch
         private const int IconWidth = 64;
         private const string RestoreMenuText = "&Restore";
         private const string EXitMenuText = "E&xit";
+        private const int PostMuteNoiseTime = 1500;
         private byte[] _buffer;
         private readonly List<Microphone> _microphones = new List<Microphone>();
         private TerminateManager _terminateManager;
         private int portNumber;
         private bool live;
+        private static Stopwatch _muteStartedStopwatch;
 
         public MainForm()
         {
+            _muteStartedStopwatch = new Stopwatch();
             InitializeComponent();
             _terminateManager = new TerminateManager(this, trayIcon);
             SetCheckbox(CheckState.Unchecked);
@@ -35,7 +38,7 @@ namespace MuteFootSwitch
         private void StartPortHunt()
         {
             live = false;
-            portNumber = 6;
+            portNumber = 5;
             arduinoSerialPort.Close();
             portTimer.Start();
         }
@@ -93,8 +96,17 @@ namespace MuteFootSwitch
             SwitchMic(checkState);
         }
 
-        private static void SwitchMic(bool enabled)
+        private static void SwitchMic(bool micEnabled)
         {
+            if (micEnabled)
+            {
+                _muteStartedStopwatch.Reset();
+            }
+            else
+            {
+                _muteStartedStopwatch.Restart();
+            }
+
             using (var deviceEnumerator = new MMDeviceEnumerator())
             {
                 var devices = deviceEnumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active);
@@ -103,7 +115,7 @@ namespace MuteFootSwitch
                     //Debug.WriteLine($"{device.FriendlyName}:{!device.AudioEndpointVolume.Mute}");
                     //if (!(device.AudioEndpointVolume.Mute == !enabled))
                     {
-                        device.AudioEndpointVolume.Mute = !enabled;
+                        device.AudioEndpointVolume.Mute = !micEnabled;
                     }
                 }
             }
@@ -123,8 +135,20 @@ namespace MuteFootSwitch
             {
                 masterPeakValue = (float)(Math.Log10(masterPeakValue) * (100 / 2));
             }
+
+            DealWithHotMicAfterMuteCommand(masterPeakValue);
             micLevel.Value = (int)masterPeakValue;
             DrawIcon((int)masterPeakValue);
+        }
+
+        private void DealWithHotMicAfterMuteCommand(float masterPeakValue)
+        {
+            if (masterPeakValue > 0.00001 && _muteStartedStopwatch.ElapsedMilliseconds > PostMuteNoiseTime)
+            {
+                micLiveCheckBox.CheckState = CheckState.Checked;
+                reMuteTime.Start();
+                System.Diagnostics.Debug.WriteLine($"{_muteStartedStopwatch.ElapsedMilliseconds:0000} Mic is not actually muted: {masterPeakValue}");
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -291,6 +315,12 @@ namespace MuteFootSwitch
         private void doubleCheckTimer_Tick(object sender, EventArgs e)
         {
             SwitchMic(micLiveCheckBox.Checked);
+        }
+
+        private void reMuteTime_Tick(object sender, EventArgs e)
+        {
+            reMuteTime.Enabled = false;
+            micLiveCheckBox.CheckState = CheckState.Unchecked;
         }
     }
 
